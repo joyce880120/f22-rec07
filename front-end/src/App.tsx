@@ -34,7 +34,11 @@ class App extends React.Component<Props, GameState> {
     /**
      * state has type GameState as specified in the class inheritance.
      */
-    this.state = { cells: [] }
+    this.state = { 
+      cells: [],
+      currentPlayer: "",
+      winner: ""
+    }
   }
 
   /**
@@ -46,6 +50,14 @@ class App extends React.Component<Props, GameState> {
     const response = await fetch('/newgame');
     const json = await response.json();
     this.setState({ cells: json['cells'] });
+  }
+  
+  undoGame = async () => {
+    const response = await fetch('/undo');
+    const json = await response.json();
+    this.setState({ cells: json['cells'] });
+    this.setState({ currentPlayer: json['currentPlayer'] });
+    this.setState({ winner: json['winner'] });
   }
 
   /**
@@ -62,6 +74,8 @@ class App extends React.Component<Props, GameState> {
       const response = await fetch(`/play?x=${x}&y=${y}`)
       const json = await response.json();
       this.setState({ cells: json['cells'] });
+      this.setState({ currentPlayer: json['currentPlayer'] });
+      this.setState({ winner: json['winner'] });
     }
   }
 
@@ -102,6 +116,7 @@ class App extends React.Component<Props, GameState> {
     }
   }
 
+
   /**
    * The only method you must define in a React.Component subclass.
    * @returns the React element via JSX.
@@ -121,7 +136,11 @@ class App extends React.Component<Props, GameState> {
         <div id="bottombar">
           <button onClick={/* get the function, not call the function */this.newGame}>New Game</button>
           {/* Exercise: implement Undo function */}
-          <button>Undo</button>
+          <button onClick={this.undoGame}>Undo</button>
+        </div>
+        <div id="instructions">
+          <p>Current Player: {this.state.currentPlayer}</p>
+          <p>Winner: {this.state.winner}</p>
         </div>
       </div>
     );

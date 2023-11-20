@@ -11,6 +11,10 @@ enum Player {
     Player(int value) {
         this.value = value;
     }
+    @Override
+    public String toString() {
+        return String.valueOf(value);
+    }
 }
 
 public class Game {
@@ -38,6 +42,12 @@ public class Game {
 
     public Player getPlayer() {
         return this.player;
+    }
+    public Game getHistory() {
+        int size = this.history.size();
+        Game temp = this.history.get(size - 1);
+        this.history.remove(size - 1);
+        return temp;
     }
 
     public Game play(int x, int y) {
